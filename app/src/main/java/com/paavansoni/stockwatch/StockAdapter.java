@@ -33,4 +33,26 @@ class StockAdapter extends RecyclerView.Adapter<MyViewHolder>{
 
         return new MyViewHolder(itemView);
     }
+
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        Log.d(TAG, "onBindViewHolder: FILLING VIEW HOLDER Note " + position);
+
+        Stock stock = stockList.get(position);
+
+        holder.symbol.setText(stock.getSymbol());
+
+        holder.name.setText(stock.getName());
+
+        holder.price.setText(String.valueOf(stock.getLatestPrice()));
+
+        String comboChange = (stock.getChange()) + "(" + stock.getChangePercentage() + ")";
+        holder.percentage.setText(comboChange);
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return stockList.size();
+    }
 }
