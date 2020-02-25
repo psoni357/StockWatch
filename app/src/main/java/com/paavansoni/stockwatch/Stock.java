@@ -8,8 +8,8 @@ class Stock {
     private double changePercentage;
 
     Stock() {
-        symbol = "";
-        name = "";
+        symbol = "Symbol";
+        name = "Name";
         latestPrice = 0;
         change = 0;
         changePercentage = 0;
