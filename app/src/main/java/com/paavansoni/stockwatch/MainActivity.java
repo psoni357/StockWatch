@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener{
@@ -24,6 +26,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private RecyclerView recyclerView; // Layout's recyclerview
 
     private StockAdapter mAdapter; // Data to recyclerview adapter
+
+    private SwipeRefreshLayout swiper; // The SwipeRefreshLayout
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +41,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        swiper = findViewById(R.id.swiper);
+        swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                doRefresh();
+            }
+        });
+
         for (int i = 0; i < 20; i++) {
             stockList.add(new Stock());
         }
+    }
+
+    private void doRefresh() {
+        Collections.shuffle(stockList);
+        mAdapter.notifyDataSetChanged();
+        swiper.setRefreshing(false);
+        Toast.makeText(this, "List content shuffled", Toast.LENGTH_SHORT).show();
     }
 
     @Override
