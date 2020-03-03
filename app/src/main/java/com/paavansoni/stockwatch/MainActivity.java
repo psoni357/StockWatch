@@ -6,8 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,11 +26,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private final List<Stock> stockList = new ArrayList<>();
 
+    private ArrayList<Stock> stockSymbolList = new ArrayList<>();
+
     private RecyclerView recyclerView; // Layout's recyclerview
 
     private StockAdapter mAdapter; // Data to recyclerview adapter
 
     private SwipeRefreshLayout swiper; // The SwipeRefreshLayout
+
+    private Boolean symbolsReady = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +62,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void doRefresh() {
-        Collections.shuffle(stockList);
-        mAdapter.notifyDataSetChanged();
-        swiper.setRefreshing(false);
         Toast.makeText(this, "List content shuffled", Toast.LENGTH_SHORT).show();
     }
 
@@ -83,5 +87,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         Toast.makeText(this, "This should add a new stock", Toast.LENGTH_LONG).show();
         return true;
+    }
+
+    private boolean doNetCheck() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) {
+            Toast.makeText(this, "Cannot access ConnectivityManager", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+        if (netInfo != null && netInfo.isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public void acceptSymbols(ArrayList<Stock> stocks) {
+        stockSymbolList.addAll(stocks);
+        symbolsReady = true;
     }
 }

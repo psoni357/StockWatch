@@ -2,14 +2,14 @@ package com.paavansoni.stockwatch;
 
 class Stock {
     private String symbol;
-    private String name;
+    private String company;
     private double latestPrice;
     private double change;
     private double changePercentage;
 
     Stock() {
         symbol = "Symbol";
-        name = "Name";
+        company = "Name";
         latestPrice = 0;
         change = 0;
         changePercentage = 0;
@@ -17,7 +17,7 @@ class Stock {
 
     Stock(String symbol, String name, double latestPrice, double change, double changePercentage) {
         this.symbol = symbol;
-        this.name = name;
+        this.company = name;
         this.latestPrice = latestPrice;
         this.change = change;
         this.changePercentage = changePercentage;
@@ -27,8 +27,8 @@ class Stock {
         return symbol;
     }
 
-    public String getName() {
-        return name;
+    public String getCompany() {
+        return company;
     }
 
     public double getLatestPrice() {
@@ -47,8 +47,8 @@ class Stock {
         this.symbol = symbol;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCompany(String name) {
+        this.company = name;
     }
 
     public void setLatestPrice(double latestPrice) {
