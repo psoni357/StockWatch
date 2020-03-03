@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         for (int i = 0; i < 20; i++) {
-            stockList.add(new Stock());
+            stockList.add(new Stock("Symbol","name",i,0,0));
         }
     }
 
