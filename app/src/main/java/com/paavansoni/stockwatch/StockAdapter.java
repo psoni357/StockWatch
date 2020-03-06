@@ -42,7 +42,7 @@ class StockAdapter extends RecyclerView.Adapter<MyViewHolder>{
 
         holder.symbol.setText(stock.getSymbol());
 
-        holder.name.setText(stock.getName());
+        holder.name.setText(stock.getCompany());
 
         holder.price.setText(String.valueOf(stock.getLatestPrice()));
 

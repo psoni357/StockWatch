@@ -1,7 +1,5 @@
 package com.paavansoni.stockwatch;
 
-import android.annotation.SuppressLint;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -15,37 +13,36 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class NameDownloader extends AsyncTask<String, Void, String> {
-    private static final String DATA_URL =
-            "https://api.iextrading.com/1.0/ref-data/symbolsl";
+public class StockDownloader extends AsyncTask<String, Void, String> {
+    private MainActivity mainactivity;
 
-    @SuppressLint("StaticFieldLeak")
-    private MainActivity mainActivity;
-    private static final String TAG = "NameDownloaderAsync";
+    private static final String TAG = "StockDownloaderAsync";
 
-    NameDownloader(MainActivity ma) {
-        mainActivity = ma;
+    private static final String DATA_URL_START = "https://cloud.iexapis.com/stable/stock/";
+
+    private static final String DATA_URL_TOKEN = "/quote?token=pk_fb2f3ecacfe249efa26e398ad72a410d";
+
+    StockDownloader(MainActivity ma){
+        mainactivity = ma;
     }
 
     @Override
     protected void onPostExecute(String value) {
         super.onPostExecute(value);
-        ArrayList<Stock> stocks = parseJSON(value);
+        Stock stock = parseJSON(value);
         Log.d(TAG, "onPostExecute: ");
-        mainActivity.acceptSymbols(stocks);
+        mainactivity.acceptStock(stock);
         // Where you pass data back to your actiivyt
     }
 
     @Override
     protected String doInBackground(String... strings) {
-        Uri dataUri = Uri.parse(DATA_URL);
-        String urlToUse = dataUri.toString();
-        Log.d(TAG, "doInBackground: " + urlToUse);
+        String symbol = strings[0];
+        String builtURL = DATA_URL_START + symbol + DATA_URL_TOKEN;
 
         StringBuilder sb = new StringBuilder();
-
-        try {
-            URL url = new URL(urlToUse);
+        try{
+            URL url = new URL(builtURL);
 
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -62,31 +59,31 @@ public class NameDownloader extends AsyncTask<String, Void, String> {
             }
 
             Log.d(TAG, "doInBackground: " + sb.toString());
-
-        } catch (Exception e) {
+        }
+        catch (Exception e){
             Log.e(TAG, "doInBackground: ", e);
             return null;
         }
-
         return sb.toString();
     }
 
-    private ArrayList<Stock> parseJSON(String s) {
-        ArrayList<Stock> parsedStocks = new ArrayList<>();
+    private Stock parseJSON(String s) {
+        Stock stock;
         try{
-            JSONArray jObjMain = new JSONArray(s);
-            for (int i = 0; i < jObjMain.length(); i++) {
-                JSONObject jStock = (JSONObject) jObjMain.get(i);
-                String symbol = jStock.getString("symbol");
-                String company = jStock.getString("name");
+            JSONObject jObjMain = new JSONObject(s);
+            String symbol = jObjMain.getString("symbol");
+            String company = jObjMain.getString("companyName");
+            double price = jObjMain.getDouble("latestPrice");
+            double change = jObjMain.getDouble("change");
+            double changePercent = jObjMain.getDouble("changePercent");
 
-                parsedStocks.add(new Stock(symbol,company,0,0,0));
-            }
+            stock = new Stock(symbol, company, price, change, changePercent);
         }
         catch(Exception e){
             Log.d(TAG, "parseJSON: " + e.getMessage());
             e.printStackTrace();
+            stock = new Stock();
         }
-        return parsedStocks;
+        return stock;
     }
 }

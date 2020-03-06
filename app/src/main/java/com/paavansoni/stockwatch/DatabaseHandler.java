@@ -80,4 +80,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.close(); }
         return stocks;
     }
+
+    void shutDown() {
+        database.close();
+    }
 }
