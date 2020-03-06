@@ -1,21 +1,19 @@
 package com.paavansoni.stockwatch;
 
 
-//import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Context;
-//import android.content.DialogInterface;
-//import android.content.Intent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
-//import android.util.Log;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,7 +21,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-//import java.util.Collections;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener{
@@ -68,10 +66,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
  */
         Boolean connected = fillDB();
+        if(connected==false){
+            Toast.makeText(this, "No network connection. Please connect and restart the app.", Toast.LENGTH_LONG).show();
+        }
+        else{
+            new NameDownloader(this).execute();
+        }
 
         databaseHandler = new DatabaseHandler(this);
-
-        new NameDownloader(this).execute();
     }
 
     private void doRefresh() {
@@ -80,10 +82,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
    public Boolean fillDB(){
         if (doNetCheck()){
+            stockList.clear();
             ArrayList<Stock> tempList = databaseHandler.loadStocks();
             for(Stock s:tempList){
-
+                new StockDownloader(this).execute(s.getSymbol());
             }
+            updateList();
             return true;
        }
         else{
@@ -91,6 +95,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
        }
 
    }
+
+    private void updateList() {
+        Collections.sort(stockList);
+        mAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public void onResume() {
@@ -142,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(symbolsReady==false){
-            Toast.makeText(this, "Still downloading symbols. Please try again in a bit.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Stock information not downloaded. Please try again in a bit.", Toast.LENGTH_LONG).show();
         }
         return true;
     }
@@ -175,6 +184,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void acceptStock(Stock stock) {
-
+        stockList.add(stock);
     }
 }

@@ -1,6 +1,6 @@
 package com.paavansoni.stockwatch;
 
-class Stock {
+class Stock implements Comparable{
     private String symbol;
     private String company;
     private double latestPrice;
@@ -61,5 +61,11 @@ class Stock {
 
     public void setChangePercentage(double changePercentage) {
         this.changePercentage = changePercentage;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Stock toComp = (Stock)o;
+        return (this.getSymbol().compareTo(toComp.getSymbol()));
     }
 }
