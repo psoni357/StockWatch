@@ -68,7 +68,7 @@ public class StockDownloader extends AsyncTask<String, Void, String> {
     }
 
     private Stock parseJSON(String s) {
-        Stock stock;
+        Stock stock = new Stock();;
         try{
             JSONObject jObjMain = new JSONObject(s);
             String symbol = jObjMain.getString("symbol");
@@ -82,7 +82,6 @@ public class StockDownloader extends AsyncTask<String, Void, String> {
         catch(Exception e){
             Log.d(TAG, "parseJSON: " + e.getMessage());
             e.printStackTrace();
-            stock = new Stock();
         }
         return stock;
     }
