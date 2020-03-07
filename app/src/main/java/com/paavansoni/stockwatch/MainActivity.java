@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         databaseHandler = new DatabaseHandler(this);
 
-        if(doNetCheck()==false){
+        if(!doNetCheck()){
             Toast.makeText(this, "No network connection. Please connect and restart the app.", Toast.LENGTH_LONG).show();
             fillDBnoConn();
         }
@@ -81,7 +81,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void doRefresh() {
-        Toast.makeText(this, "List content shuffled", Toast.LENGTH_SHORT).show();
+        if(doNetCheck()){
+            new NameDownloader(this).execute();
+            fillDB();
+        }
+        else{
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setIcon(R.drawable.baseline_info_black_48);
+
+            builder.setMessage("Stocks cannot be refreshed or downloaded without a network connection. Please connect and then refresh.");
+            builder.setTitle("No Network Connection");
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
     }
 
    public void fillDB(){
@@ -187,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(symbolsReady==false || doNetCheck()==false){
+        if(!symbolsReady || !doNetCheck()){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder.setIcon(R.drawable.baseline_info_black_48);
@@ -260,12 +274,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void findStock(String stock){
         ArrayList<String> found = new ArrayList<String>();
         final ArrayList<Stock> corrStock = new ArrayList<Stock>();
+
         for (Stock s : stockSymbolList){
             if (s.getSymbol().contains(stock)){
                 found.add(s.getSymbol() + " - " + s.getCompany());
                 corrStock.add(s);
             }
         }
+
         final CharSequence[] sArray = new CharSequence[found.size()];
         for (int i = 0; i < found.size(); i++)
             sArray[i] = found.get(i);
@@ -333,7 +349,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void getStock(Stock s){
         //this should pull stock information from Async and add it
-
+        new StockDownloader(this).execute(s.getSymbol());
+        doAdd(s);
+        updateList();
     }
 
     public void acceptSymbols(ArrayList<Stock> stocks) {
