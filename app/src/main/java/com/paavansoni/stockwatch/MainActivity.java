@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             AlertDialog dialog = builder.create();
             dialog.show();
         }
+        swiper.setRefreshing(false);
     }
 
    public void fillDB(){
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mAdapter.notifyDataSetChanged();
     }
 
-    @Override
+/*    @Override
     public void onResume() {
         ArrayList<Stock> list = databaseHandler.loadStocks();
 
@@ -136,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         super.onResume();
     }
+
+ */
 
     @Override
     protected void onDestroy() {
@@ -296,6 +299,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             AlertDialog dialog = builder.create();
             dialog.show();
+            Toast.makeText(this, "You are in findStock", Toast.LENGTH_SHORT).show();
         }
         else if (found.size()==1){
             Stock a = corrStock.get(0);
@@ -351,7 +355,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //this should pull stock information from Async and add it
         new StockDownloader(this).execute(s.getSymbol());
         doAdd(s);
-        updateList();
     }
 
     public void acceptSymbols(ArrayList<Stock> stocks) {
@@ -362,5 +365,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void acceptStock(Stock stock) {
         stockList.add(stock);
+        updateList();
     }
 }

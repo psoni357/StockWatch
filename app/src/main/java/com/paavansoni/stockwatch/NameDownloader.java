@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class NameDownloader extends AsyncTask<String, Void, String> {
     private static final String DATA_URL =
-            "https://api.iextrading.com/1.0/ref-data/symbolsl";
+            "https://api.iextrading.com/1.0/ref-data/symbols";
 
     @SuppressLint("StaticFieldLeak")
     private MainActivity mainActivity;
