@@ -108,8 +108,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
        for(Stock s:tempList){
            new StockDownloader(this).execute(s.getSymbol());
        }
-       updateList();
-
    }
 
    public void fillDBnoConn(){

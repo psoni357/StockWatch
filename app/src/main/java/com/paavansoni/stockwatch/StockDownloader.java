@@ -3,6 +3,7 @@ package com.paavansoni.stockwatch;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 
 import org.json.JSONObject;
@@ -12,6 +13,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import androidx.appcompat.app.AlertDialog;
 
 
 public class StockDownloader extends AsyncTask<String, Void, String> {
@@ -24,6 +27,8 @@ public class StockDownloader extends AsyncTask<String, Void, String> {
 
     private static final String DATA_URL_TOKEN = "/quote?token=pk_fb2f3ecacfe249efa26e398ad72a410d";
 
+    private Boolean foundNull = false;
+
     StockDownloader(MainActivity ma){
         mainactivity = ma;
     }
@@ -31,14 +36,29 @@ public class StockDownloader extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String value) {
         super.onPostExecute(value);
-        Stock stock = parseJSON(value);
-        Log.d(TAG, "onPostExecute: ");
-        mainactivity.acceptStock(stock);
+        if(foundNull){
+            AlertDialog.Builder builder = new AlertDialog.Builder(mainactivity);
+
+            builder.setIcon(R.drawable.baseline_report_problem_black_48);
+
+            builder.setMessage("No data found on stock " + value);
+            builder.setTitle("Error");
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            mainactivity.doDelete(value);
+        }
+        else{
+            Stock stock = parseJSON(value);
+            Log.d(TAG, "onPostExecute: ");
+            mainactivity.acceptStock(stock);
+        }
         // Where you pass data back to your actiivyt
     }
 
     @Override
     protected String doInBackground(String... strings) {
+        foundNull = false;
         String symbol = strings[0];
         String builtURL = DATA_URL_START + symbol + DATA_URL_TOKEN;
 
@@ -64,8 +84,10 @@ public class StockDownloader extends AsyncTask<String, Void, String> {
         }
         catch (Exception e){
             Log.e(TAG, "doInBackground: ", e);
-            return null;
+            foundNull = true;
+            return symbol;
         }
+
         return sb.toString();
     }
 
