@@ -223,12 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     //search for stock
-                    if(dupFound(et.getText().toString())){
-                        dupMsg(et.getText().toString());
-                    }
-                    else{
-                        findStock(et.getText().toString());
-                    }
+                    findStock(et.getText().toString());
                 }
             });
             builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
@@ -246,9 +241,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return true;
     }
 
-    public Boolean dupFound(String symbol){
+    public Boolean dupFound(Stock st){
         for(Stock s:stockList){
-            if(s.getSymbol().equals(symbol)){
+            if(s.getSymbol().equals(st.getSymbol())){
                 return true;
             }
         }
@@ -295,7 +290,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else if (found.size()==1){
             Stock a = corrStock.get(0);
-            getStock(a);
+            if(dupFound(a)){
+                dupMsg(a.getSymbol());
+            }
+            else{
+                getStock(a);
+            }
         }
         else{
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -307,7 +307,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             builder.setItems(sArray, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     //picked an option
-                    getStock(corrStock.get(which));
+                    Stock a = corrStock.get(which);
+                    if(dupFound(a)){
+                        dupMsg(a.getSymbol());
+                    }
+                    else{
+                        getStock(a);
+                    }
                 }
             });
 
