@@ -40,13 +40,36 @@ class StockAdapter extends RecyclerView.Adapter<MyViewHolder>{
 
         Stock stock = stockList.get(position);
 
+        String arrow;
+        if(stock.getChange()>0){
+            arrow = "\u25B2";
+            holder.symbol.setTextColor(0xFF4CAF50);
+            holder.name.setTextColor(0xFF4CAF50);
+            holder.price.setTextColor(0xFF4CAF50);
+            holder.percentage.setTextColor(0xFF4CAF50);
+        }
+        else if(stock.getChange()<0){
+            arrow = "\u25BC";
+            holder.symbol.setTextColor(0xFFD11616);
+            holder.name.setTextColor(0xFFD11616);
+            holder.price.setTextColor(0xFFD11616);
+            holder.percentage.setTextColor(0xFFD11616);
+        }
+        else{
+            arrow = "";
+            holder.symbol.setTextColor(0xFFFFFFFF);
+            holder.name.setTextColor(0xFFFFFFFF);
+            holder.price.setTextColor(0xFFFFFFFF);
+            holder.percentage.setTextColor(0xFFFFFFFF);
+        }
+
         holder.symbol.setText(stock.getSymbol());
 
         holder.name.setText(stock.getCompany());
 
         holder.price.setText(String.valueOf(stock.getLatestPrice()));
 
-        String comboChange = (stock.getChange()) + "(" + stock.getChangePercentage() + ")";
+        String comboChange = arrow + " " + (String.format("%.02f",stock.getChange()) + " (" + String.format("%.02f",stock.getChangePercentage()) + "%)");
         holder.percentage.setText(comboChange);
 
     }
