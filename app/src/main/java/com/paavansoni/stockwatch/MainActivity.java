@@ -69,8 +69,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         databaseHandler = new DatabaseHandler(this);
 
+        setTitle("Stock Watch");
+
         if(!doNetCheck()){
-            Toast.makeText(this, "No network connection. Please connect and restart the app.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No network connection. Please connect to be able to use the app.", Toast.LENGTH_LONG).show();
             fillDBnoConn();
         }
         else{
@@ -143,8 +145,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {  // click listener called by ViewHolder clicks
-        Toast.makeText(this, "You made a short click", Toast.LENGTH_SHORT).show();
-
         pos = recyclerView.getChildLayoutPosition(v);
         s = stockList.get(pos);
 
@@ -158,8 +158,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // From OnLongClickListener
     @Override
     public boolean onLongClick(View v) {  // long click listener called by ViewHolder long clicks
-        Toast.makeText(this, "You made a long click", Toast.LENGTH_SHORT).show();
-
         pos = recyclerView.getChildLayoutPosition(v);
         s = stockList.get(pos);
 
@@ -274,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final ArrayList<Stock> corrStock = new ArrayList<>();
 
         for (Stock s : stockSymbolList){
-            if (s.getSymbol().contains(stock)){
+            if (s.getSymbol().contains(stock) || s.getCompany().contains(stock)){
                 found.add(s.getSymbol() + " - " + s.getCompany());
                 corrStock.add(s);
             }
@@ -294,7 +292,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             AlertDialog dialog = builder.create();
             dialog.show();
-            Toast.makeText(this, "You are in findStock", Toast.LENGTH_SHORT).show();
         }
         else if (found.size()==1){
             Stock a = corrStock.get(0);
