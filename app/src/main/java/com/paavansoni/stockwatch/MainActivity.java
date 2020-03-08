@@ -14,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.InputType;
 
 import android.view.Gravity;
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setTitle("Stock Watch");
 
         if(!doNetCheck()){
-            Toast.makeText(this, "No network connection. Please connect to be able to use the app.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No network connection. Please connect and refresh the app.", Toast.LENGTH_LONG).show();
             fillDBnoConn();
         }
         else{
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void doRefresh() {
         if(doNetCheck()){
+            symbolsReady = false;
             new NameDownloader(this).execute();
             fillDB();
         }
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             builder.setIcon(R.drawable.baseline_info_black_48);
 
-            builder.setMessage("Stocks cannot be refreshed or downloaded without a network connection. Please connect and then refresh.");
+            builder.setMessage("Stocks cannot be updated without a network connection.");
             builder.setTitle("No Network Connection");
 
             AlertDialog dialog = builder.create();
@@ -121,21 +123,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Collections.sort(stockList);
         mAdapter.notifyDataSetChanged();
     }
-
-/*    @Override
-    public void onResume() {
-        ArrayList<Stock> list = databaseHandler.loadStocks();
-
-        stockList.clear();
-        stockList.addAll(list);
-
-        Log.d(TAG, "onResume: " + list);
-        mAdapter.notifyDataSetChanged();
-
-        super.onResume();
-    }
-
- */
 
     @Override
     protected void onDestroy() {
@@ -180,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        builder.setMessage("Would you like to delete stock " + s.getCompany() + "?");
+        builder.setMessage("Would you like to delete stock " + s.getSymbol() + "?");
         builder.setTitle("Confirm Delete");
 
         AlertDialog dialog = builder.create();
@@ -202,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             builder.setIcon(R.drawable.baseline_info_black_48);
 
-            builder.setMessage("Stocks cannot be added without a network connection. Without a connection stock information cannot be downloaded.");
+            builder.setMessage("Stocks cannot be added without a network connection.");
             builder.setTitle("No Network Connection");
 
             AlertDialog dialog = builder.create();
@@ -214,7 +201,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             // Create an edittext and set it to be the builder's view
             final EditText et = new EditText(this);
-            et.setInputType(InputType.TYPE_CLASS_TEXT);
+            et.setInputType(InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+            et.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
             et.setGravity(Gravity.CENTER_HORIZONTAL);
             builder.setView(et);
 
@@ -267,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final ArrayList<Stock> corrStock = new ArrayList<>();
 
         for (Stock s : stockSymbolList){
-            if (s.getSymbol().contains(stock) || s.getCompany().contains(stock.toUpperCase())){
+            if (s.getSymbol().contains(stock.toUpperCase()) || s.getCompany().contains(stock.toUpperCase())){
                 found.add(s.getSymbol() + " - " + s.getCompany());
                 corrStock.add(s);
             }
@@ -295,6 +283,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             else{
                 getStock(a);
+                //Toast.makeText(this, "Stock Added!", Toast.LENGTH_SHORT).show();
             }
         }
         else{
@@ -351,6 +340,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void getStock(Stock s){
         //this should pull stock information from Async and add it
+        Toast.makeText(this, "Stock Added!", Toast.LENGTH_SHORT).show();
         new StockDownloader(this).execute(s.getSymbol());
         doAdd(s);
     }

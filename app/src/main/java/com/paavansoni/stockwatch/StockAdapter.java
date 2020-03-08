@@ -67,7 +67,7 @@ class StockAdapter extends RecyclerView.Adapter<MyViewHolder>{
 
         holder.name.setText(stock.getCompany());
 
-        holder.price.setText(String.valueOf(stock.getLatestPrice()));
+        holder.price.setText(String.format("%.02f",stock.getLatestPrice()));
 
         String comboChange = arrow + " " + (String.format("%.02f",stock.getChange()) + " (" + String.format("%.02f",stock.getChangePercentage()) + "%)");
         holder.percentage.setText(comboChange);
