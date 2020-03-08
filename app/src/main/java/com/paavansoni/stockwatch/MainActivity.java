@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final ArrayList<Stock> corrStock = new ArrayList<>();
 
         for (Stock s : stockSymbolList){
-            if (s.getSymbol().contains(stock) || s.getCompany().contains(stock)){
+            if (s.getSymbol().contains(stock) || s.getCompany().contains(stock.toUpperCase())){
                 found.add(s.getSymbol() + " - " + s.getCompany());
                 corrStock.add(s);
             }
