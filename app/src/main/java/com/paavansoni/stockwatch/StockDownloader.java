@@ -1,9 +1,10 @@
 package com.paavansoni.stockwatch;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.json.JSONArray;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -11,9 +12,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
+
 
 public class StockDownloader extends AsyncTask<String, Void, String> {
+    @SuppressLint("StaticFieldLeak")
     private MainActivity mainactivity;
 
     private static final String TAG = "StockDownloaderAsync";
@@ -68,7 +70,7 @@ public class StockDownloader extends AsyncTask<String, Void, String> {
     }
 
     private Stock parseJSON(String s) {
-        Stock stock = new Stock();;
+        Stock stock = new Stock();
         try{
             JSONObject jObjMain = new JSONObject(s);
             String symbol = jObjMain.getString("symbol");

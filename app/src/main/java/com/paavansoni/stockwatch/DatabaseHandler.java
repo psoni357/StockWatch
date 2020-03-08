@@ -26,11 +26,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     COMPANY + " TEXT not null)";
 
     private SQLiteDatabase database;
-    private MainActivity mainActivity;
 
     DatabaseHandler(MainActivity context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        mainActivity = context;
         database = getWritableDatabase(); // Inherited from SQLiteOpenHelper
         Log.d(TAG, "DatabaseHandler: C'tor DONE");
     }
@@ -47,20 +45,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
-    public void addStock(Stock stock) {
+    void addStock(Stock stock) {
         Log.d(TAG, "addStock: Adding " + stock.getSymbol());
         ContentValues values = new ContentValues(); values.put(SYMBOL, stock.getSymbol()); values.put(COMPANY, stock.getCompany());
         database.insert(TABLE_NAME, null, values);
         Log.d(TAG, "addStock: Add Complete");
     }
 
-    public void deleteStock(String symbol) {
+    void deleteStock(String symbol) {
         Log.d(TAG, "deleteStock: Deleting Stock " + symbol);
         int cnt = database.delete(
                 TABLE_NAME, SYMBOL + " = ?", new String[] { symbol });
         Log.d(TAG, "deleteStock: " + cnt); }
 
-    public ArrayList<Stock> loadStocks() {
+    ArrayList<Stock> loadStocks() {
         ArrayList<Stock> stocks = new ArrayList<>();
         Cursor cursor = database.query(
                 TABLE_NAME, // The table to query

@@ -15,7 +15,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
-import android.util.Log;
+
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     Stock s;
 
-    private static final String TAG = "MainActivity";
 
     private static final String siteStub = "http://www.marketwatch.com/investing/stock/";
 
@@ -106,18 +105,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
            new StockDownloader(this).execute(s.getSymbol());
        }
        updateList();
-       return;
 
    }
 
    public void fillDBnoConn(){
        stockList.clear();
        ArrayList<Stock> tempList = databaseHandler.loadStocks();
-       for(Stock s:tempList){
-           stockList.add(s);
-       }
+       stockList.addAll(tempList);
        updateList();
-       return;
    }
 
     private void updateList() {
@@ -275,8 +270,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void findStock(String stock){
-        ArrayList<String> found = new ArrayList<String>();
-        final ArrayList<Stock> corrStock = new ArrayList<Stock>();
+        ArrayList<String> found = new ArrayList<>();
+        final ArrayList<Stock> corrStock = new ArrayList<>();
 
         for (Stock s : stockSymbolList){
             if (s.getSymbol().contains(stock)){
