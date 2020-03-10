@@ -182,13 +182,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(!symbolsReady || !doNetCheck()){
+        if(!doNetCheck()){
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             builder.setIcon(R.drawable.baseline_info_black_48);
 
             builder.setMessage("Stocks cannot be added without a network connection.");
             builder.setTitle("No Network Connection");
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+        else if(!symbolsReady){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setIcon(R.drawable.baseline_info_black_48);
+
+            builder.setMessage("Stocks cannot be added without downloading stock symbols. Please refresh the app.");
+            builder.setTitle("Stock Symbols Not Downloaded");
 
             AlertDialog dialog = builder.create();
             dialog.show();
