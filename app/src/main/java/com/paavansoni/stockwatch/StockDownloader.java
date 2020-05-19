@@ -25,12 +25,15 @@ public class StockDownloader extends AsyncTask<String, Void, String> {
 
     private static final String DATA_URL_START = "https://cloud.iexapis.com/stable/stock/";
 
-    private static final String DATA_URL_TOKEN = "/quote?token=pk_fb2f3ecacfe249efa26e398ad72a410d";
+    private static final String DATA_URL_TOKEN = "/quote?token=";
+
+    private static String KEY;
 
     private Boolean foundNull = false;
 
     StockDownloader(MainActivity ma){
         mainactivity = ma;
+        KEY = mainactivity.getString(R.string.api_key);
     }
 
     @Override
@@ -60,7 +63,7 @@ public class StockDownloader extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... strings) {
         foundNull = false;
         String symbol = strings[0];
-        String builtURL = DATA_URL_START + symbol + DATA_URL_TOKEN;
+        String builtURL = DATA_URL_START + symbol + DATA_URL_TOKEN + KEY;
 
         StringBuilder sb = new StringBuilder();
         try{
